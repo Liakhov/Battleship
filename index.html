@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Battleship</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h3>Морской бой</h3>
+            </div>
+            <div class="guesses">
+                <span>Выстрелы: </span>
+                <span id="guesses" class="navbar-text">0</span>
+            </div>
+            <div class="shipsSunk">
+                <span>Потоплено кораблей: </span>
+                <span id="shipsSunk">0</span>
+            </div>
+            <div class="hitNum">
+                <span>Попадания: </span>
+                <span id="hitNum">0</span>
+            </div>
+            <div class="timer">
+                <span id="min">00</span>
+                <span>:</span>
+                <span id="sec">00</span>
+            </div>
+        </div>
+    </header>
+    <div id="field">
+        <span></span>
+    </div>
+    <div class="col-lg-12">
+        <div class="message">
+            <span id="message"></span>
+        </div>
+        <div>
+            <span id="result"></span>
+        </div>
+     </div>
+    
+    <footer>
+        <a href="https://liakhov.github.io/">https://liakhov.github.io</a>
+    </footer>
+<script src="js/main.js"></script>
+</body>
+</html>
