@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Battleship</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h3>Морской бой</h3>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="status-panel">
+            <div class="admin">
+                <div class="guesses">
+                    <span>Выстрелы: </span>
+                    <span class="admin__guesses">0</span>
+                </div>
+                <div class="shipsSunk">
+                    <span>Потоплено кораблей: </span>
+                    <span class="admin__shipsSunk">0</span>
+                </div>
+                <div class="hitNum">
+                    <span>Попадания: </span>
+                    <span class="admin__hitNum">0</span>
+                </div>
+            </div>
+            <div class="user">
+                <div class="guesses">
+                    <span>Выстрелы: </span>
+                    <span class="user__guesses">0</span>
+                </div>
+                <div class="shipsSunk">
+                    <span>Потоплено кораблей: </span>
+                    <span class="user__shipsSunk">0</span>
+                </div>
+                <div class="hitNum">
+                    <span>Попадания: </span>
+                    <span class="user__hitNum">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="field"> </div>
+    <div class="col-lg-12">
+        <div class="message">
+            <span id="message"></span>
+        </div>
+        <div>
+            <span id="result"></span>
+        </div>
+     </div>
+    <footer>
+        <a href="https://liakhov.github.io/">https://liakhov.github.io</a>
+    </footer>
+    <script src="js/main.min.js"></script>
+</body>
+</html>

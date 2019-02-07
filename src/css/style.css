@@ -18,7 +18,7 @@ header{
 }
 .container{
     width: 100%;
-    max-width: 1060px;
+    max-width: 1080px;
     margin: 0 auto;
     overflow: hidden;
 }
@@ -26,15 +26,34 @@ header{
     float: left;
     margin: 10px 0;
 }
+.status-panel{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.admin, .user{
+    display: flex;
+    flex-direction: row;
+}
+.admin{
+    align-items: flex-start;
+}
+.user{
+    align-items: flex-end;
+}
 .timer,
 .guesses,
 .shipsSunk,
 .hitNum{
     display: inline-block;
-    margin: 10px 40px;
+    margin: 10px 15px;
 }
 #field{
-    margin-top: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 50px;
 }
 table{
     margin: 20px auto;
