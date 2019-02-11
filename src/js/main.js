@@ -1,3 +1,6 @@
+    const adminShots = [],
+          userShots = [];
+
     const model = {
       boardSize: 10,
       numShips: 10,
@@ -5,7 +8,13 @@
       hitNum: 0
     };
     const user = {
-        name: 'user', guesses: 0, numShipsSunk: 0, shipsSunk: 0, hitNum: 0,  numShips: 10,  modelShip: ['', 4, 3, 2, 1],
+        name: 'user',
+        guesses: 0,
+        numShipsSunk: 0,
+        shipsSunk: 0,
+        hitNum: 0,
+        numShips: 10,
+        modelShip: ['', 4, 3, 2, 1],
         ships: [{locations: [], hits: ["", "", "", ""]},
             {locations: [], hits: ["", "", ""]},
             {locations: [], hits: ["", "", ""]},
@@ -19,7 +28,13 @@
     };
 
     const admin = {
-        name: 'admin', guesses: 0,  numShipsSunk: 0, shipsSunk: 0,  hitNum: 0,  numShips: 10,  modelShip: ['', 4, 3, 2, 1],
+        name: 'admin',
+        guesses: 0,
+        numShipsSunk: 0,
+        shipsSunk: 0,
+        hitNum: 0,
+        numShips: 10,
+        modelShip: ['', 4, 3, 2, 1],
         ships: [ { locations: [], hits: ["", "", "", ""] },
             { locations: [], hits: ["", "", ""] },
             { locations: [], hits: ["", "", ""] },
@@ -30,19 +45,6 @@
             { locations: [], hits: [""] },
             { locations: [], hits: [""] },
             { locations: [], hits: [""] }]
-    };
-
-    const controller = {
-        guesses: 0,
-        activePlayer: 'user',
-        processGuesees: function processGuesees(gues, player) {
-            player.guesses++;
-            displayGuesses(player.guesses, player); // Запись количества выстрелов
-            let hit = fire(gues, player);
-            if (player.shipsSunk === player.numShips) {
-                displayResult(player);
-            }
-        }
     };
 
     // Cоздаем игровое поле
@@ -64,7 +66,6 @@
     createField('admin');
 
 
-
     function displayHit(location, player) {
         let td = document.getElementById(player.name).querySelectorAll('td');
         for (let i = 0; i < td.length; i++) {
@@ -82,7 +83,6 @@
       }
     }
 
-
     function isSunk(ship) {
       for (let i = 0; i < ship.locations.length; i++) {
           if (ship.hits[i] !== 'hit') {
@@ -91,6 +91,7 @@
       }
       return true;
     }
+
     function fire(gues, player) {
       for (let p = 0; p < player.numShips; p++) {
           let ship = player.ships[p];
@@ -101,8 +102,10 @@
               displayHit(gues, player);
               displayHits(player);
               displayMessage('Попадание');
-
-              if (isSunk(ship, player)) {
+              if(controller.activePlayer === 'admin'){
+                  setTimeout(randomFire, 1000)
+              }
+              if (isSunk(ship)) {
                   displayMessage(`${player.name} потопил корабль!`);
                   player.shipsSunk++;
                   displayShipsSunk(player.shipsSunk, player);
@@ -111,53 +114,28 @@
           }
       }
       displayMiss(gues, player);
+
+      if(controller.activePlayer === 'user') {
+          controller.activePlayer = 'admin';
+          setTimeout(randomFire, 1000);
+      }else if(controller.activePlayer === 'admin'){
+          controller.activePlayer = 'user';
+      }
       displayMessage(`${player.name} промах`);
       return false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    let adminShots = [],
-        userShots = [],
-        userFiels = document.getElementById('user'),
-        adminFiels = document.getElementById('admin');
-
+    const controller = {
+        activePlayer: 'admin',
+        processGuesees(gues, player) {
+            player.guesses++;
+            displayGuesses(player.guesses, player); // Запись количества выстрелов
+            fire(gues, player);
+            if (player.shipsSunk === player.numShips) {
+                displayResult(player);
+            }
+        }
+    };
 
     function colisions(shipCoord, player) {
         for (let i = 0; i < model.numShips; i++) {
@@ -196,7 +174,6 @@
             verticalCord = Math.floor(Math.random() * model.boardSize);
             horizonalCord = Math.floor(Math.random() * (model.boardSize - deck));
         }
-
         for (let j = 0; j < deck; j++) {
             if (direction === 1) {
                 verticalCord += 1;
@@ -207,7 +184,6 @@
         }
         return ships;
     }
-
     function generateShipsLocation(player) {
         let index = 0, shipCoord, deck;
 
@@ -222,27 +198,55 @@
             }
         }
     }
-    generateShipsLocation(admin);
+
+
+
+    function locateShip(player, fieldClass) {
+      let td = document.getElementById(fieldClass).getElementsByTagName('td');
+      for (let k = 0; k < player.numShips; k++) {
+          for (let i = 0; i < player.numShips; i++) {
+              for (let j = 0; j < td.length; j++) {
+                  if (td[j].dataset.index === player.ships[k].locations[i]) {
+                      td[j].className = 'ship';
+                  }
+              }
+          }
+      }
+    }
+
+
     generateShipsLocation(user);
+    generateShipsLocation(admin);
+    locateShip(admin, 'admin');
 
+    function randomFire() {
+        var shot, x, y;
+        do{
+            x = Math.floor(Math.random() * model.boardSize);
+            y = Math.floor(Math.random() * model.boardSize);
+            shot = x + '' + y;
+        }while(adminShots.indexOf(shot) >= 0);
 
-    adminFiels.onclick = function (event) {
-        let target = event.target;
-
-        if(target.tagName != 'TD' || admin.shipsSunk === admin.numShips) return;
-        //if(target.tagName != 'TD' || admin.shipsSunk === admin.numShips || controller.activePlayer != 'admin') return;
-        // Проверка на выстрелы в ячейку
-        if(adminShots.indexOf(target.getAttribute('data-index')) < 0){
-            adminShots.push(target.getAttribute('data-index'));
-            controller.processGuesees(target.getAttribute('data-index'), admin);
+        // Проверка на выстрел в ячейку
+        if(adminShots.indexOf(shot) < 0){
+            controller.processGuesees(shot, admin);
+            adminShots.push(shot);
         }
+    }
+
+    function game() {
+        setTimeout(randomFire, 1500);
+    }
+
+    document.getElementById('start').onclick = function (){
+        game();
     };
+
+    const userFiels = document.getElementById('user');
+
     userFiels.onclick = function (event) {
         let target = event.target;
-
-        if(target.tagName != 'TD' || user.shipsSunk === user.numShips) return;
-        // if(target.tagName != 'TD' || user.shipsSunk === user.numShips  || controller.activePlayer != 'user') return;
-
+        if(target.tagName != 'TD' || user.shipsSunk === user.numShips  || controller.activePlayer != 'user') return;
         // Проверка на выстрелы в ячейку
         if(userShots.indexOf(target.getAttribute('data-index')) < 0){
             userShots.push(target.getAttribute('data-index'));
@@ -250,73 +254,34 @@
         }
     };
 
+    // Display functions
     function displayHits(player) {
-          if(player.name === 'user'){
-              document.getElementsByClassName('user__hitNum')[0].innerHTML = user.hitNum;
-          }else if(player.name === 'admin'){
-              document.getElementsByClassName('admin__hitNum')[0].innerHTML = admin.hitNum;
-          }
-      }
-      function displayGuesses(guesses, player) {
-          if(player.name === 'user'){
-              document.getElementsByClassName('user__guesses')[0].innerHTML = guesses;
-          }else if(player.name === 'admin'){
-              document.getElementsByClassName('admin__guesses')[0].innerHTML = guesses;
-          }
-      }
-
-      function displayMessage(msg) {
-          document.getElementById('message').innerHTML = msg;
-      }
-      function displayShipsSunk(numShipsSunk, player) {
-          if(player.name === 'user'){
-              document.getElementsByClassName('user__shipsSunk')[0].innerHTML = numShipsSunk;
-          }else if(player.name === 'admin'){
-              document.getElementsByClassName('admin__shipsSunk')[0].innerHTML = numShipsSunk;
-          }
-      }
-      function displayResult(player) {
-          document.getElementById('result').innerHTML = `Победил ${player.name}, игра закончена!`
-      }
-
-      function locateShip(player, fieldClass) {
-          let td = document.getElementById(fieldClass).getElementsByTagName('td');
-
-          for (let k = 0; k < player.numShips; k++) {
-              for (let i = 0; i < player.numShips; i++) {
-                  for (let j = 0; j < td.length; j++) {
-                      if (td[j].dataset.index === player.ships[k].locations[i]) {
-                          td[j].className = 'ship';
-                      }
-                  }
-              }
-          }
-      }
-    locateShip(admin, 'admin');
-    locateShip(user, 'user');
-
-    var sec = 0;
-    var min = 0;
-
-    function timer() {
-        var secund = document.getElementById('sec');
-        var minutes = document.getElementById('min');
-        if(sec === 60){
-            sec = 0;
-            min++;
+        if(player.name === 'user'){
+            document.getElementsByClassName('user__hitNum')[0].innerHTML = user.hitNum;
+        }else if(player.name === 'admin'){
+            document.getElementsByClassName('admin__hitNum')[0].innerHTML = admin.hitNum;
         }
-        if(sec < 10){
-            secund.innerHTML = '0' + '' + sec;
-        }else{
-            secund.innerHTML = sec;
+    }
+    function displayGuesses(guesses, player) {
+        if(player.name === 'user'){
+            document.getElementsByClassName('user__guesses')[0].innerHTML = guesses;
+        }else if(player.name === 'admin'){
+            document.getElementsByClassName('admin__guesses')[0].innerHTML = guesses;
         }
-        if(min < 10){
-            minutes.innerHTML = '0' + '' + min;
-        }else {
-            minutes.innerHTML = min;
+    }
+    function displayMessage(msg) {
+        document.getElementById('message').innerHTML = msg;
+    }
+    function displayShipsSunk(numShipsSunk, player) {
+        if(player.name === 'user'){
+            document.getElementsByClassName('user__shipsSunk')[0].innerHTML = numShipsSunk;
+        }else if(player.name === 'admin'){
+            document.getElementsByClassName('admin__shipsSunk')[0].innerHTML = numShipsSunk;
         }
-        if(min === 60){
-            min = 0;
-        }
-        sec++;
-    };
+    }
+    function displayResult(player) {
+        document.getElementById('result').innerHTML = `Победил ${player.name}, игра закончена!`
+    }
+
+
+

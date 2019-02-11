@@ -6,25 +6,20 @@
     font-weight: 400;
 }
 body{
-
-    height: 100vh;
+    height: 100%;
     width: 100%;
-    position: fixed;
 }
-header{
-    padding: 10px;
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
-    -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
-}
+
 .container{
     width: 100%;
-    max-width: 1080px;
+    max-width: 1280px;
     margin: 0 auto;
     overflow: hidden;
 }
-.logo{
-    float: left;
-    margin: 10px 0;
+.title{
+    text-align: left;
+    padding: 25px 0;
+    font-weight: bold;
 }
 .status-panel{
     display: flex;
@@ -53,7 +48,52 @@ header{
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    margin-top: 50px;
+}
+button{
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    color: white;
+}
+button:active, button:focus{
+    outline: 0;
+}
+#start{
+    border: 1px solid #28a745;
+    background-color: #28a745;
+}
+#start:focus{
+    box-shadow: 0 0 0 0.2rem rgba(40,167,69,.5);
+}
+#start:active{
+    background: #1e7e34;
+}
+#reset{
+    border: 1px solid #dc3545;
+    background-color: #dc3545;
+}
+#reset:focus{
+    box-shadow: 0 0 0 0.2rem rgba(220,53,69,.5);
+}
+#reset:active{
+    background: #bd2130;
+}
+#reload{
+    border: 1px solid #6c757d;
+    background-color: #6c757d;
+}
+#reload:focus{
+    box-shadow: 0 0 0 0.2rem rgba(108,117,125,.5);
+}
+#reload:active{
+    background: #545b62;
 }
 table{
     margin: 20px auto;
@@ -74,6 +114,9 @@ td{
 .ship{
     background-color: red;
 }
+.blue{
+    background: blue;
+}
 img{
     display: inline-block;
     height: 30px;
@@ -81,28 +124,18 @@ img{
 span{
     line-height: 30px;
 }
-
-footer{
-    position: absolute;
-    width: 100%;
-    padding: 15px 0;
-    bottom: 0;
-    overflow: hidden;
-    border-top: 1px solid black;
+button{
+    cursor: pointer;
 }
-footer a{
-    font-size: 12px;
-    color: #263238;
-}
-@media only screen and (max-width: 768px){
-    header{
-        padding: 5px;
-        font-size: 12px;
-    }
+@media only screen and (max-width: 600px){
     #field{
+        flex-direction: column;
         margin-top: 10px;
     }
-    .timer, .guesses, .shipsSunk, .hitNum{
+    .title{
+       padding: 15px;
+    }
+    .guesses, .shipsSunk, .hitNum{
         margin: 10px 15px;
     }
     td{
