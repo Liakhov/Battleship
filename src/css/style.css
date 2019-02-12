@@ -36,6 +36,15 @@ body{
 .user{
     align-items: flex-end;
 }
+.header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+.mask{
+    background: blue;
+}
 .timer,
 .guesses,
 .shipsSunk,
@@ -45,7 +54,7 @@ body{
 }
 #field{
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     justify-content: space-around;
     align-items: center;
 }
