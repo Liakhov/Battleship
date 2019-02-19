@@ -43,7 +43,8 @@ body{
     justify-content: space-around;
 }
 .mask{
-    background: blue;
+    background: url("../img/mask.png") no-repeat center center;
+    background-size: 100% 100%;
 }
 .timer,
 .guesses,
@@ -122,9 +123,6 @@ td{
 }
 .ship{
     background-color: red;
-}
-.blue{
-    background: blue;
 }
 img{
     display: inline-block;
