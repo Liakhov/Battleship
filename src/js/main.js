@@ -5,6 +5,18 @@ let model = {
     hitNum: 0,
     modelShip: ["", 4, 3, 2, 1]
 };
+let controller = {
+    activePlayer: "admin",
+    currentShots: false,
+    secondSuccesShot: [],
+    sucesShots: 0,
+    processGuesees(gues, player) {
+        player.guesses++;
+        displayGuesses(player.guesses, player); // Запись количества выстрелов
+        fire(gues, player);
+        if (player.shipsSunk === player.numShips) displayResult(player);
+    }
+};
 let user = {
     name: "user",
     guesses: 0,
@@ -24,7 +36,7 @@ let user = {
         { locations: [], hits: [""] }
     ]
 };
-const admin = {
+let admin = {
     name: "admin",
     guesses: 0,
     numShipsSunk: 0,
@@ -78,18 +90,23 @@ function maskHit(item, player) {
     var x = +item.dataset.index[0];
     let y = +item.dataset.index[1];
     let td = document.getElementById(player.name).querySelectorAll("td");
-    arr = [1 + x + "" + (1 + y), x - 1 + "" + (y - 1), 1 + x + "" + (y - 1), x - 1 + "" + (1 + y) ];
+    arr = [
+        1 + x + "" + (1 + y),
+        x - 1 + "" + (y - 1),
+        1 + x + "" + (y - 1),
+        x - 1 + "" + (1 + y)
+    ];
 
-    arr.forEach(function (items) {
+    arr.forEach(function(items) {
         for (let i = 0; i < td.length; i++) {
-            if (td[i].dataset.index === items) td[i].className = "mask";
+            //if (td[i].dataset.index === items) td[i].className = "mask";
         }
     });
     arr.length = 0;
 }
 let displayMiss = (location, player) => {
     let td = document.getElementById(player.name).querySelectorAll("td");
-    td.forEach(item =>  {
+    td.forEach(item => {
         if (item.dataset.index === location) item.className = "miss";
     });
 };
@@ -109,16 +126,30 @@ function fire(gues, player) {
             displayHit(gues, player);
             displayHits(player);
             displayMessage("Попадание");
-            if (controller.activePlayer === "admin" && !isSunk(ship) && admin.arrHits.length ===  0) {
-                admin.arrHits.push(gues);
-                test();
-
+            if (controller.activePlayer === "admin" && !isSunk(ship)) {
+                if (controller.currentShots) {
+                    controller.sucesShots++;
+                    controller.secondSuccesShot.push(gues);
+                    //cleverShot();
+                    setTimeout(superClever, 1000);
+                } else {
+                    controller.sucesShots++;
+                    controller.secondSuccesShot.push(gues);
+                    controller.currentShots = true;
+                    admin.arrHits.push(gues);
+                    setTimeout(cleverShot, 1000);
+                }
             }
             if (isSunk(ship)) {
                 displayMessage(`${player.name} потопил корабль!`);
+                controller.currentShots = false;
+                admin.arrHits.length = 0;
+                admin.teritoryHits.length = 0;
+                controller.secondSuccesShot.length = 0;
+                controller.sucesShots = 0;
                 player.shipsSunk++;
                 displayShipsSunk(player.shipsSunk, player);
-                setTimeout(randomFire, 1000);
+                setTimeout(gunning, 1000);
             }
             return true;
         }
@@ -127,7 +158,7 @@ function fire(gues, player) {
 
     if (controller.activePlayer === "user") {
         controller.activePlayer = "admin";
-        setTimeout(randomFire, 1000);
+        setTimeout(gunning, 1000);
     } else if (controller.activePlayer === "admin") {
         controller.activePlayer = "user";
     }
@@ -135,16 +166,6 @@ function fire(gues, player) {
     return false;
 }
 
-
-let controller = {
-    activePlayer: "admin",
-    processGuesees(gues, player) {
-        player.guesses++;
-        displayGuesses(player.guesses, player); // Запись количества выстрелов
-        fire(gues, player);
-        if (player.shipsSunk === player.numShips) displayResult(player);
-    }
-};
 function colisions(shipCoord, player) {
     for (let i = 0; i < model.numShips; i++) {
         let ship = player.ships[i];
@@ -217,47 +238,157 @@ generateShipsLocation(admin);
 locateShip(admin, "admin");
 
 const adminShots = [];
-function randomFire() {
-    var shot, x, y;
-    do {
-        x = Math.floor(Math.random() * model.boardSize);
-        y = Math.floor(Math.random() * model.boardSize);
-        shot = x + "" + y;
-    } while (adminShots.indexOf(shot) >= 0);
+
+function gunning(){
+        if(!controller.currentShots) {
+            //Random gunning
+            var shot, x, y;
+            do {
+                x = Math.floor(Math.random() * model.boardSize);
+                y = Math.floor(Math.random() * model.boardSize);
+                shot = x + "" + y;
+            } while (adminShots.indexOf(shot) >= 0);
+
+            // Проверка на выстрел в ячейку
+            if (adminShots.indexOf(shot) < 0) {
+                controller.processGuesees(shot, admin);
+                adminShots.push(shot);
+            }
+        }else{
+            cleverShot();
+        }
+}
+
+document.getElementById("start").onclick = function() {
+    setTimeout(gunning, 1500);
+};
+
+function cleverShot() {
+    // Проверка масива на заполеность клеток для обстрела
+    if (admin.teritoryHits.length === 0) {
+        let td = admin.arrHits[0];
+        admin.teritoryHits.push(+td.charAt(0) + "" + (Number(td.charAt(1)) + 1));
+        admin.teritoryHits.push(
+            Number(td.charAt(0)) + "" + (Number(td.charAt(1)) - 1)
+        );
+        admin.teritoryHits.push(
+            Number(td.charAt(0)) + 1 + "" + Number(td.charAt(1))
+        );
+        admin.teritoryHits.push(
+            Number(td.charAt(0)) - 1 + "" + Number(td.charAt(1))
+        );
+        console.log(`td: ${td}`);
+        console.log(admin.teritoryHits);
+    }
+
+    var shot, rand;
+    do{
+
+      //Проверка на последний елемент масива
+      if(admin.teritoryHits.length === 1){
+          rand = 0;
+          shot = admin.teritoryHits[rand];
+          break;
+      }
+
+      rand = Math.floor(Math.random() * admin.teritoryHits.length);
+      console.log(`rand ${rand}`);
+      shot = admin.teritoryHits[rand];
+
+      if(shot < 0 && shot > 99) admin.teritoryHits.splice(rand, 1);
+
+    }while(adminShots.indexOf(shot) >= 0);
+
+
+    //console.log(admin.teritoryHits);
+    console.log(`shot ${shot}`);
 
     // Проверка на выстрел в ячейку
     if (adminShots.indexOf(shot) < 0) {
         controller.processGuesees(shot, admin);
         adminShots.push(shot);
+        admin.teritoryHits.splice(rand, 1);
+    }else{
+        admin.teritoryHits.splice(rand, 1);
     }
-}
-document.getElementById("start").onclick = function() {
-    setTimeout(randomFire, 1500);
-};
-
-function test() {
-    let td = admin.arrHits[0];
-    admin.teritoryHits.push(+td.charAt(0) + ''+ (Number(td.charAt(1)) + 1));
-    admin.teritoryHits.push(Number(td.charAt(0)) + '' + (Number(td.charAt(1)) - 1));
-    admin.teritoryHits.push(Number(td.charAt(0)) + 1 + '' + Number(td.charAt(1)));
-    admin.teritoryHits.push(Number(td.charAt(0)) - 1 + '' + Number(td.charAt(1)));
-    console.log(`td: ${td}`);
-    console.log(admin.teritoryHits);
-
-    cleverShot();
-}
-function cleverShot() {
-    for(let i = 0; i < 4; i++){
+    console.log(`After cleverShot ${admin.teritoryHits}`);
 
 
-        let tets = admin.teritoryHits[i];
-        console.log(admin.teritoryHits);
-        console.log(tets);
 
+   }
+
+function superClever() {
+    console.log('Start cuperClerver');
+    console.log(`Second Suc sh ${controller.secondSuccesShot}`);
+    let testArr = [...controller.secondSuccesShot];
+
+    console.log(`testArr before sort ${testArr}`);
+
+    alert('Succes');
+    var arr = [];
+
+
+    function compareNumeric(a, b) {
+        if (a > b) return 1;
+        if (a < b) return -1;
+    }
+
+    testArr.sort(compareNumeric);
+
+    console.log(`testArr after sort ${testArr}`);
+
+    if(testArr[0].charAt(0) / testArr[1].charAt(0) == 1){
+
+        arr.push(testArr[0].charAt(0)  + '' + (testArr[0].charAt(1) - 1));
+        arr.push(testArr[testArr.length - 1].charAt(0)  + '' + (Number(testArr[testArr.length - 1].charAt(1)) + 1));
+
+
+        console.log('Horizontal');
+    }else{
+        arr.push((testArr[0].charAt(0) - 1) + '' + testArr[0].charAt(1));
+        arr.push((1 +  Number(testArr[testArr.length - 1].charAt(0))) + '' + testArr[testArr.length - 1].charAt(1));
+        console.log('Vertical');
+    }
+
+
+
+    console.log(`Super clever ${arr}`);
+
+    var testShot;
+
+    if(arr.length === 1){
+        testShot = arr[0];
         // Проверка на выстрел в ячейку
-        if (adminShots.indexOf(tets) < 0) {
-        controller.processGuesees(tets, admin);
-        adminShots.push(tets);
+        if (adminShots.indexOf(testShot) < 0) {
+            controller.processGuesees(testShot, admin);
+            adminShots.push(testShot);
+            admin.teritoryHits.splice(0, 1);
+        }else{
+            admin.teritoryHits.splice(rand, 1);
+        }
+
+    }else if(arr.length > 1){
+
+        do{
+            //Проверка на последний елемент масива
+            if(arr.length === 1){
+                testShot = arr[0];
+                break;
+            }
+            var asdf = Math.floor(Math.random() * arr.length);
+
+            testShot = arr[asdf];
+
+
+        }while (adminShots.indexOf(testShot) >= 0);
+
+
+        if (adminShots.indexOf(testShot) < 0) {
+            controller.processGuesees(testShot, admin);
+            adminShots.push(testShot);
+            admin.teritoryHits.splice(asdf, 1);
+        }else{
+            admin.teritoryHits.splice(asdf, 1);
         }
     }
 }
@@ -265,14 +396,14 @@ function cleverShot() {
 const userShots = [];
 document.getElementById("user").onclick = function(event) {
     let target = event.target;
-    if ( target.tagName != "TD" || user.shipsSunk === model.numShips ||  controller.activePlayer != "user" )  return;
+    if (target.tagName != "TD" || user.shipsSunk === model.numShips || controller.activePlayer != "user") return;
+
     // Проверка на выстрелы в ячейку
     if (userShots.indexOf(target.getAttribute("data-index")) < 0) {
         userShots.push(target.getAttribute("data-index"));
         controller.processGuesees(target.getAttribute("data-index"), user);
     }
 };
-
 // Display functions
 function displayHits(player) {
     if (player.name === "user") {
@@ -296,7 +427,7 @@ function displayShipsSunk(numShipsSunk, player) {
     if (player.name === "user") {
         document.getElementsByClassName("user__shipsSunk")[0].innerHTML = numShipsSunk;
     } else if (player.name === "admin") {
-        document.getElementsByClassName( "admin__shipsSunk")[0].innerHTML = numShipsSunk;
+        document.getElementsByClassName("admin__shipsSunk")[0].innerHTML = numShipsSunk;
     }
 }
 function displayResult(player) {
