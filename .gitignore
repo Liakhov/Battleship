@@ -1,6 +1,7 @@
-
+.idea/
 /node_modules/
 /dist/
+/src/js/main.min.js
 /.git/
 /**/_backstage
 /**/package-lock.json
