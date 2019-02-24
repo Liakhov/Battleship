@@ -11,56 +11,42 @@ let controller = {
     secondSuccesShot: [],
     sucesShots: 0,
     processGuesees(gues, player) {
-        player.guesses++;
-        displayGuesses(player.guesses, player); // Запись количества выстрелов
         fire(gues, player);
         if (player.shipsSunk === player.numShips) displayResult(player);
     }
 };
-let user = {
-    name: "user",
-    guesses: 0,
-    numShipsSunk: 0,
-    shipsSunk: 0,
-    hitNum: 0,
-    ships: [
-        { locations: [], hits: ["", "", "", ""] },
-        { locations: [], hits: ["", "", ""] },
-        { locations: [], hits: ["", "", ""] },
-        { locations: [], hits: ["", ""] },
-        { locations: [], hits: ["", ""] },
-        { locations: [], hits: ["", ""] },
-        { locations: [], hits: [""] },
-        { locations: [], hits: [""] },
-        { locations: [], hits: [""] },
-        { locations: [], hits: [""] }
-    ]
-};
-let admin = {
-    name: "admin",
-    guesses: 0,
-    numShipsSunk: 0,
-    shipsSunk: 0,
-    arrHits: [],
-    teritoryHits: [],
-    hitNum: 0,
-    ships: [
-        { locations: [], hits: ["", "", "", ""] },
-        { locations: [], hits: ["", "", ""] },
-        { locations: [], hits: ["", "", ""] },
-        { locations: [], hits: ["", ""] },
-        { locations: [], hits: ["", ""] },
-        { locations: [], hits: ["", ""] },
-        { locations: [], hits: [""] },
-        { locations: [], hits: [""] },
-        { locations: [], hits: [""] },
-        { locations: [], hits: [""] }
-    ]
-};
+class User {
+    constructor(name) {
+        this.name = name;
+        this.guesses = 0;
+        this.numShipsSunk = 0;
+        this.shipsSunk = 0;
+        this.arrHits = [];
+        this.teritoryHits = [];
+        this.hitNum = 0;
+        this.numShips =  10,
+        this.ships = [
+            { locations: [], hits: ["", "", "", ""] },
+            { locations: [], hits: ["", "", ""] },
+            { locations: [], hits: ["", "", ""] },
+            { locations: [], hits: ["", ""] },
+            { locations: [], hits: ["", ""] },
+            { locations: [], hits: ["", ""] },
+            { locations: [], hits: [""] },
+            { locations: [], hits: [""] },
+            { locations: [], hits: [""] },
+            { locations: [], hits: [""] }
+        ];
+    }
+}
+
+let user = new User('user');
+let admin = new User('admin');
 
 // Cоздаем игровое поле
 function createField(profile) {
-    let table = document.createElement("table");
+    let table = document.getElementById(profile);
+
     for (let j = 0; j < model.boardSize; j++) {
         let tr = document.createElement("tr");
         for (let i = 0; i < model.boardSize; i++) {
@@ -70,8 +56,6 @@ function createField(profile) {
         }
         table.appendChild(tr);
     }
-    table.id = profile;
-    document.getElementById("field").appendChild(table);
 }
 createField("user");
 createField("admin");
@@ -85,25 +69,28 @@ function displayHit(location, player) {
         }
     }
 }
-var arr = [];
+let maskArr = [];
 function maskHit(item, player) {
-    var x = +item.dataset.index[0];
+    let x = +item.dataset.index[0];
     let y = +item.dataset.index[1];
     let td = document.getElementById(player.name).querySelectorAll("td");
-    arr = [
+    maskArr = [
         1 + x + "" + (1 + y),
         x - 1 + "" + (y - 1),
         1 + x + "" + (y - 1),
         x - 1 + "" + (1 + y)
     ];
-
-    arr.forEach(function(items) {
+    for(let j = 0; j < maskArr.length; j++){
         for (let i = 0; i < td.length; i++) {
-            //if (td[i].dataset.index === items) td[i].className = "mask";
+            if (td[i].dataset.index === maskArr[j]) {
+                td[i].className = "mask";
+                if(player.name === 'admin') adminShots.push(td[i].dataset.index);
+            }
         }
-    });
-    arr.length = 0;
+    }
+    maskArr.length = 0;
 }
+
 let displayMiss = (location, player) => {
     let td = document.getElementById(player.name).querySelectorAll("td");
     td.forEach(item => {
@@ -117,6 +104,9 @@ let isSunk = ship => {
     return true;
 };
 function fire(gues, player) {
+    player.guesses++;
+    displayGuesses(player.guesses, player); // Запись количества выстрелов
+
     for (let p = 0; p < model.numShips; p++) {
         let ship = player.ships[p];
 
@@ -130,7 +120,6 @@ function fire(gues, player) {
                 if (controller.currentShots) {
                     controller.sucesShots++;
                     controller.secondSuccesShot.push(gues);
-                    //cleverShot();
                     setTimeout(superClever, 1000);
                 } else {
                     controller.sucesShots++;
@@ -200,8 +189,8 @@ function generateShips(deck) {
         horizonalCord = Math.floor(Math.random() * (model.boardSize - deck));
     }
     for (let j = 0; j < deck; j++) {
-        direction === 1 ? (verticalCord += 1) : (horizonalCord += 1); // New
-        ships.push(verticalCord + "" + horizonalCord);
+        direction === 1 ? (verticalCord += 1) : (horizonalCord += 1);
+        ships.push(`${verticalCord}${horizonalCord}`);
     }
     return ships;
 }
@@ -241,7 +230,6 @@ const adminShots = [];
 
 function gunning(){
         if(!controller.currentShots) {
-            //Random gunning
             var shot, x, y;
             do {
                 x = Math.floor(Math.random() * model.boardSize);
@@ -267,7 +255,7 @@ function cleverShot() {
     // Проверка масива на заполеность клеток для обстрела
     if (admin.teritoryHits.length === 0) {
         let td = admin.arrHits[0];
-        admin.teritoryHits.push(+td.charAt(0) + "" + (Number(td.charAt(1)) + 1));
+        admin.teritoryHits.push(Number(td.charAt(0)) + "" + (Number(td.charAt(1)) + 1));
         admin.teritoryHits.push(
             Number(td.charAt(0)) + "" + (Number(td.charAt(1)) - 1)
         );
@@ -277,8 +265,8 @@ function cleverShot() {
         admin.teritoryHits.push(
             Number(td.charAt(0)) - 1 + "" + Number(td.charAt(1))
         );
-        console.log(`td: ${td}`);
-        console.log(admin.teritoryHits);
+        //console.log(`td: ${td}`);
+        //console.log(admin.teritoryHits);
     }
 
     var shot, rand;
@@ -292,7 +280,7 @@ function cleverShot() {
       }
 
       rand = Math.floor(Math.random() * admin.teritoryHits.length);
-      console.log(`rand ${rand}`);
+        //console.log(`rand ${rand}`);
       shot = admin.teritoryHits[rand];
 
       if(shot < 0 && shot > 99) admin.teritoryHits.splice(rand, 1);
@@ -301,7 +289,7 @@ function cleverShot() {
 
 
     //console.log(admin.teritoryHits);
-    console.log(`shot ${shot}`);
+    //console.log(`shot ${shot}`);
 
     // Проверка на выстрел в ячейку
     if (adminShots.indexOf(shot) < 0) {
@@ -311,22 +299,18 @@ function cleverShot() {
     }else{
         admin.teritoryHits.splice(rand, 1);
     }
-    console.log(`After cleverShot ${admin.teritoryHits}`);
-
-
-
+    //console.log(`After cleverShot ${admin.teritoryHits}`);
    }
 
 function superClever() {
-    console.log('Start cuperClerver');
-    console.log(`Second Suc sh ${controller.secondSuccesShot}`);
+    //console.log('Start cuperClerver');
+    //console.log(`Second Suc sh ${controller.secondSuccesShot}`);
     let testArr = [...controller.secondSuccesShot];
 
-    console.log(`testArr before sort ${testArr}`);
+    //console.log(`testArr before sort ${testArr}`);
 
     alert('Succes');
     var arr = [];
-
 
     function compareNumeric(a, b) {
         if (a > b) return 1;
@@ -335,7 +319,7 @@ function superClever() {
 
     testArr.sort(compareNumeric);
 
-    console.log(`testArr after sort ${testArr}`);
+    //console.log(`testArr after sort ${testArr}`);
 
     if(testArr[0].charAt(0) / testArr[1].charAt(0) == 1){
 
@@ -343,16 +327,13 @@ function superClever() {
         arr.push(testArr[testArr.length - 1].charAt(0)  + '' + (Number(testArr[testArr.length - 1].charAt(1)) + 1));
 
 
-        console.log('Horizontal');
+        //console.log('Horizontal');
     }else{
         arr.push((testArr[0].charAt(0) - 1) + '' + testArr[0].charAt(1));
         arr.push((1 +  Number(testArr[testArr.length - 1].charAt(0))) + '' + testArr[testArr.length - 1].charAt(1));
         console.log('Vertical');
     }
-
-
-
-    console.log(`Super clever ${arr}`);
+    //console.log(`Super clever ${arr}`);
 
     var testShot;
 
@@ -366,9 +347,7 @@ function superClever() {
         }else{
             admin.teritoryHits.splice(rand, 1);
         }
-
     }else if(arr.length > 1){
-
         do{
             //Проверка на последний елемент масива
             if(arr.length === 1){
@@ -376,13 +355,8 @@ function superClever() {
                 break;
             }
             var asdf = Math.floor(Math.random() * arr.length);
-
             testShot = arr[asdf];
-
-
         }while (adminShots.indexOf(testShot) >= 0);
-
-
         if (adminShots.indexOf(testShot) < 0) {
             controller.processGuesees(testShot, admin);
             adminShots.push(testShot);
@@ -392,7 +366,6 @@ function superClever() {
         }
     }
 }
-
 const userShots = [];
 document.getElementById("user").onclick = function(event) {
     let target = event.target;
@@ -404,13 +377,14 @@ document.getElementById("user").onclick = function(event) {
         controller.processGuesees(target.getAttribute("data-index"), user);
     }
 };
+document.getElementById('reload').onclick = () => location.reload();
+
 // Display functions
 function displayHits(player) {
     if (player.name === "user") {
         document.getElementsByClassName("user__hitNum")[0].innerHTML = user.hitNum;
     } else if (player.name === "admin") {
-        document.getElementsByClassName("admin__hitNum")[0].innerHTML =
-            admin.hitNum;
+        document.getElementsByClassName("admin__hitNum")[0].innerHTML = admin.hitNum;
     }
 }
 function displayGuesses(guesses, player) {
@@ -431,5 +405,5 @@ function displayShipsSunk(numShipsSunk, player) {
     }
 }
 function displayResult(player) {
-    document.getElementById("result").innerHTML = `Победил ${player.name}, игра закончена!`;
+    document.getElementById("message").innerHTML = `Победил ${player.name}, игра закончена!`;
 }

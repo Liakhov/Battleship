@@ -8,64 +8,61 @@
     <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h2 class="title">Battleship</h2>
-    </div>
-    <div class="container">
-        <div class="header">
-            <div>
-                user
-            </div>
-            <div>
-                admin
-            </div>
-        </div>
-        <div id="field"></div>
-    </div>
-    <div class="container">
-        <div class="status-panel">
-            <div class="admin">
-                <div class="guesses">
-                    <span>Выстрелы: </span>
-                    <span class="admin__guesses">0</span>
-                </div>
-                <div class="shipsSunk">
-                    <span>Потоплено кораблей: </span>
-                    <span class="admin__shipsSunk">0</span>
-                </div>
-                <div class="hitNum">
-                    <span>Попадания: </span>
-                    <span class="admin__hitNum">0</span>
-                </div>
-            </div>
-            <div class="user">
-                <div class="guesses">
-                    <span>Выстрелы: </span>
-                    <span class="user__guesses">0</span>
-                </div>
-                <div class="shipsSunk">
-                    <span>Потоплено кораблей: </span>
-                    <span class="user__shipsSunk">0</span>
-                </div>
-                <div class="hitNum">
-                    <span>Попадания: </span>
-                    <span class="user__hitNum">0</span>
-                </div>
+    <div class="header">
+        <div class="container">
+            <h2 class="main-title">Battleship</h2>
+            <div class="buttons">
+                <button id="start">Start</button>
+                <button id="reload">Reload</button>
             </div>
         </div>
     </div>
-    <div>
+    <div class="container">
         <div class="message">
-            <span id="message"></span>
+            <p id="message">Для начала игры, нажми кнопку "Start"</p>
         </div>
-        <div>
-            <span id="result"></span>
+        <div id="field">
+            <div class="user">
+                <div class="field__title">
+                    <p>User</p>
+                </div>
+                <table id="user"></table>
+                <div class="field__info">
+                    <div class="guesses">
+                        <span>Выстрелы: </span>
+                        <span class="user__guesses">0</span>
+                    </div>
+                    <div class="shipsSunk">
+                        <span>Корабли: </span>
+                        <span class="user__shipsSunk">0</span>
+                    </div>
+                    <div class="hitNum">
+                        <span>Попадания: </span>
+                        <span class="user__hitNum">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="admin">
+                <div class="field__title">
+                    <p>Admin</p>
+                </div>
+                <table id="admin"></table>
+                <div class="field__info">
+                    <div class="guesses">
+                        <span>Выстрелы: </span>
+                        <span class="admin__guesses">0</span>
+                    </div>
+                    <div class="shipsSunk">
+                        <span>Корабли: </span>
+                        <span class="admin__shipsSunk">0</span>
+                    </div>
+                    <div class="hitNum">
+                        <span>Попадания: </span>
+                        <span class="admin__hitNum">0</span>
+                    </div>
+                </div>
+            </div>
         </div>
-     </div>
-    <div class="buttons">
-        <button id="start">Start</button>
-        <button id="reload">Reload</button>
-        <button id="reset">Reset</button>
     </div>
     <script src="js/main.min.js"></script>
 </body>

@@ -9,104 +9,39 @@ body{
     height: 100%;
     width: 100%;
 }
-
 .container{
     width: 100%;
     max-width: 1280px;
     margin: 0 auto;
     overflow: hidden;
 }
-.title{
-    text-align: left;
-    padding: 25px 0;
-    font-weight: bold;
+.header{
+    box-shadow: 0 6px 4px -4px rgba(0, 0, 0, .2);
 }
-.status-panel{
+.header .container{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-}
-.admin, .user{
-    display: flex;
-    flex-direction: row;
-}
-.admin{
-    align-items: flex-start;
-}
-.user{
-    align-items: flex-end;
-}
-.header{
-    display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: space-around;
 }
-.mask{
-    background: url("../img/mask.png") no-repeat center center;
-    background-size: 100% 100%;
+.main-title{
+    text-align: left;
+    padding: 10px 0;
+    font-weight: bold;
 }
-.timer,
-.guesses,
-.shipsSunk,
-.hitNum{
-    display: inline-block;
-    margin: 10px 15px;
+.field__title{
+    padding-top: 20px;
+}
+.message{
+    padding: 10px 0;
 }
 #field{
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     justify-content: space-around;
-    align-items: center;
-}
-button{
-    display: inline-block;
-    font-weight: 400;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: .25rem;
-    color: white;
-}
-button:active, button:focus{
-    outline: 0;
-}
-#start{
-    border: 1px solid #28a745;
-    background-color: #28a745;
-}
-#start:focus{
-    box-shadow: 0 0 0 0.2rem rgba(40,167,69,.5);
-}
-#start:active{
-    background: #1e7e34;
-}
-#reset{
-    border: 1px solid #dc3545;
-    background-color: #dc3545;
-}
-#reset:focus{
-    box-shadow: 0 0 0 0.2rem rgba(220,53,69,.5);
-}
-#reset:active{
-    background: #bd2130;
-}
-#reload{
-    border: 1px solid #6c757d;
-    background-color: #6c757d;
-}
-#reload:focus{
-    box-shadow: 0 0 0 0.2rem rgba(108,117,125,.5);
-}
-#reload:active{
-    background: #545b62;
 }
 table{
-    margin: 20px auto;
+    margin: 20px;
     border: 2px solid black;
     border-collapse: collapse;
 }
@@ -122,43 +57,75 @@ td{
     background: url("../img/miss.png") no-repeat center center;
 }
 .ship{
-    background-color: red;
+    background-color: #4682B4;
+}
+.mask{
+    background-color: #ADD8E6;
 }
 img{
     display: inline-block;
     height: 30px;
 }
-span{
-    line-height: 30px;
-}
 button{
     cursor: pointer;
+    color: white;
+    background-color: #4682B4;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 14px;
+    line-height: 1.5;
+    border-radius: .25rem;
+    font-weight: lighter;
+    outline: 0;
 }
-@media only screen and (max-width: 600px){
+button:hover{
+    color: white;
+    background-color: #191970;
+}
+.field__info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 0 20px;
+}
+@media screen and (max-width: 1280px) {
+    .header{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+@media screen and (min-width: 480px) and (max-width: 768px) {
+    td{
+        width: 30px;
+        height: 30px;
+    }
+}
+@media screen and (max-width: 480px) {
+    .main-title{
+        font-size: 20px;
+        padding: 5px 0;
+    }
+    .message{
+        padding: 5px 0;
+    }
+    .container{
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        padding-bottom: 30px;
+    }
     #field{
         flex-direction: column;
-        margin-top: 10px;
     }
-    .title{
-       padding: 15px;
+    .field__title{
+        font-size: 14px;
     }
-    .guesses, .shipsSunk, .hitNum{
-        margin: 10px 15px;
+    table{
+        margin: 5px 15px;
     }
-    td{
-        width: 25px;
-        height: 25px;
-    }
-    .guesses{
-        display: none;
-    }
-    .hitNum{
-        display: none;
-    }
-    .hit{
-        background-size: cover;
-    }
-    .miss{
-        background: url("../img/miss.png") no-repeat center center;
+    .field__info{
+        font-size: 12px;
+        justify-content: space-around;
     }
 }
