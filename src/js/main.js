@@ -223,7 +223,6 @@ function locateShip(player, fieldClass) {
 generateShipsLocation(user);
 generateShipsLocation(admin);
 locateShip(admin, "admin");
-locateShip(user, "user");
 
 function gunning() {
     if (!controller.currentShots) {
