@@ -4,7 +4,8 @@ let model = {
     shipsSunk: 0,
     hitNum: 0,
     activePlayer: "admin",
-    modelShip: ["", 4, 3, 2, 1]
+    modelShip: ["", 4, 3, 2, 1],
+    resultsGames: []
 };
 class User {
     constructor(name) {
@@ -119,11 +120,13 @@ function fire(gues, player) {
             }
             if (isSunk(ship)) {
                 displayMessage(`${player.name} потопил корабль!`);
-                admin.currentShots = false; // умный выстрел
-                admin.arrHits.length = 0;
-                admin.teritoryHits.length = 0;
-                admin.secondSuccesShot.length = 0;
-                admin.sucesShots = 0; // попадания подряд
+                if(model.activePlayer === 'admin'){
+                    admin.currentShots = false; // умный выстрел
+                    admin.arrHits.length = 0;
+                    admin.teritoryHits.length = 0;
+                    admin.secondSuccesShot.length = 0;
+                    admin.sucesShots = 0; // попадания подряд
+                }
                 player.shipsSunk++;
                 displayShipsSunk(player.shipsSunk, player);
                 if (player.shipsSunk === model.numShips) {
@@ -209,7 +212,7 @@ function locateShip(player, fieldClass) {
 generateShipsLocation(user);
 generateShipsLocation(admin);
 locateShip(admin, "admin");
-locateShip(user, "user");
+showGames();
 
 function gunning() {
     if (!admin.currentShots) {
@@ -357,7 +360,40 @@ function displayShipsSunk(numShipsSunk, player) {
     }
 }
 function displayResult(player) {
+    resultOldGames();
     document.getElementById("message").innerHTML = `Победил ${player.name}, игра закончена!`;
 }
 document.getElementById("start").onclick = () => setTimeout(gunning, 1500);
 document.getElementById("reload").onclick = () => location.reload();
+
+
+function resultOldGames() {
+    if(!localStorage.getItem('res')){
+        let results = { games: [] };
+        results.games.push(`${user.shipsSunk}:${admin.shipsSunk}`);
+        localStorage.setItem('res', JSON.stringify(results));
+    }else if(localStorage.getItem('res')){
+        let res = JSON.parse(localStorage.getItem("res"));
+        if(res.games.length === 5)  res.games.shift();
+        res.games.push(`${user.shipsSunk}:${admin.shipsSunk}`);
+        localStorage.setItem('res', JSON.stringify(res));
+    }
+}
+function showGames() {
+    if(!localStorage.getItem('res')) return;
+    let footer = document.getElementById('footer');
+
+    let result = JSON.parse(localStorage.getItem('res'));
+
+    for(let i = 0; i < result.games.length; i++){
+        let div = document.createElement('div'),
+            span = document.createElement('span'),
+            img = document.createElement('img');
+        div.innerHTML = '<img src="img/user.png" alt="user">';
+        span.innerText = result.games[i];
+        div.appendChild(span);
+        img.src = 'img/comp.png';
+        div.appendChild(img);
+        footer.appendChild(div);
+    }
+}

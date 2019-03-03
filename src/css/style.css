@@ -8,6 +8,7 @@
 body{
     height: 100%;
     width: 100%;
+    margin-bottom: 50px;
 }
 .container{
     width: 100%;
@@ -25,9 +26,12 @@ body{
     align-items: center;
 }
 .main-title{
+    font-size: 24px;
+    color: black;
     text-align: left;
     padding: 10px 0;
     font-weight: bold;
+    text-decoration: none;
 }
 .field__title{
     padding-top: 20px;
@@ -89,6 +93,30 @@ button:hover{
     box-sizing: border-box;
     padding: 0 20px;
 }
+.footer{
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 4px 8px rgba(0, 0, 0, .2);
+}
+.footer > div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0 30px;
+}
+.footer img{
+    height: 18px;
+}
+.footer span{
+    margin: 0 10px;
+}
 @media screen and (max-width: 1280px) {
     .header{
         padding-left: 15px;
@@ -99,6 +127,26 @@ button:hover{
     td{
         width: 30px;
         height: 30px;
+    }
+}
+@media screen and (max-width: 600px) {
+    body{
+        margin-bottom: 10px;
+    }
+    .footer{
+       position: relative;
+       width: 100%;
+       flex-wrap: wrap;
+       flex-direction: row;
+       height: 100%;
+       box-shadow: none;
+    }
+    .footer > div{
+        width: 29%;
+        margin: 5px 2%;
+    }
+    .footer span{
+        margin: 0 5px;
     }
 }
 @media screen and (max-width: 480px) {
@@ -114,6 +162,9 @@ button:hover{
         padding: 10px;
         box-sizing: border-box;
         padding-bottom: 30px;
+    }
+    .header .container{
+        padding-bottom: 10px;
     }
     #field{
         flex-direction: column;
