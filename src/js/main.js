@@ -31,7 +31,6 @@ class User {
         ];
     }
 }
-
 let user = new User("user");
 let admin = new User("admin");
 admin.currentShots =  false;
@@ -119,6 +118,7 @@ function fire(gues, player) {
                 }
             }
             if (isSunk(ship)) {
+                highlightSunkShip(ship, player);
                 displayMessage(`${player.name} потопил корабль!`);
                 if(model.activePlayer === 'admin'){
                     admin.currentShots = false; // умный выстрел
@@ -249,8 +249,7 @@ function cleverShot() {
         clerverArr.length = 0;
     }
     let shot, rand;
-    do {
-        //Проверка на последний елемент масива
+    do { //Проверка на последний елемент масива
         if (admin.teritoryHits.length === 1) {
             rand = 0;
             shot = admin.teritoryHits[rand];
@@ -366,7 +365,6 @@ function displayResult(player) {
 document.getElementById("start").onclick = () => setTimeout(gunning, 1500);
 document.getElementById("reload").onclick = () => location.reload();
 
-
 function resultOldGames() {
     if(!localStorage.getItem('res')){
         let results = { games: [] };
@@ -382,9 +380,7 @@ function resultOldGames() {
 function showGames() {
     if(!localStorage.getItem('res')) return;
     let footer = document.getElementById('footer');
-
     let result = JSON.parse(localStorage.getItem('res'));
-
     for(let i = 0; i < result.games.length; i++){
         let div = document.createElement('div'),
             span = document.createElement('span'),
@@ -395,5 +391,20 @@ function showGames() {
         img.src = 'img/comp.png';
         div.appendChild(img);
         footer.appendChild(div);
+    }
+}
+function highlightSunkShip(ship, player){
+    let td = document.getElementById(player.name).querySelectorAll("td");
+    for(let i = 0; i < ship.locations.length; i++){
+        let x = +ship.locations[i].charAt(0),
+            y = +ship.locations[i].charAt(1),
+            shipArr = [
+            `${x + 1}${y}`,  `${x - 1}${y}`,  `${x}${y - 1}`,  `${x}${1 + y}`,  `${x + 1}${1 + y}`,
+            `${x - 1}${y - 1}`,  `${x}${y - 1}`,  `${1 + x}${y - 1}`,  `${x - 1}${1 + y}`,  `${1 + x}${1 + y}`
+        ];
+        for(let j = 0; j < shipArr.length; j++){
+            if(td[shipArr[j]])  player.shots.push(shipArr[j]);
+            if(td[shipArr[j]] && td[shipArr[j]].className.length === 0) td[shipArr[j]].className = 'mask';
+        }
     }
 }
