@@ -73,7 +73,7 @@ function maskHit(item, player) {
         for (let i = 0; i < td.length; i++) {
             if (td[i].dataset.index === maskArr[j]) {
                 if(td[i].className.length === 0) td[i].className = "mask";
-                if (player.name === "admin") admin.shots.push(td[i].dataset.index);
+                player.shots.push(td[i].dataset.index);
             }
         }
     }
@@ -400,11 +400,14 @@ function highlightSunkShip(ship, player){
             y = +ship.locations[i].charAt(1),
             shipArr = [
             `${x + 1}${y}`,  `${x - 1}${y}`,  `${x}${y - 1}`,  `${x}${1 + y}`,  `${x + 1}${1 + y}`,
-            `${x - 1}${y - 1}`,  `${x}${y - 1}`,  `${1 + x}${y - 1}`,  `${x - 1}${1 + y}`,  `${1 + x}${1 + y}`
-        ];
-        for(let j = 0; j < shipArr.length; j++){
-            if(td[shipArr[j]])  player.shots.push(shipArr[j]);
-            if(td[shipArr[j]] && td[shipArr[j]].className.length === 0) td[shipArr[j]].className = 'mask';
+            `${x - 1}${y - 1}`,  `${x}${y - 1}`,  `${1 + x}${y - 1}`,  `${x - 1}${1 + y}`,  `${1 + x}${1 + y}` ];
+        for(let j = 0; j < td.length; j++){
+            for(let k = 0; k < shipArr.length; k++){
+                if(td[j].dataset.index  === shipArr[k] && td[j].className.length === 0) {
+                    td[j].className = 'mask';
+                    player.shots.push(td[j].dataset.index);
+                }
+            }
         }
     }
 }
