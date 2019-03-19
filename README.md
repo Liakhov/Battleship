@@ -1,6 +1,6 @@
 # Battleship ⚓️ 
 
-### How to use Weather app
+### How to use Battleship
 1. Download from GitHub
 2. Install Node Modules: <strong>npm i</strong>
 3. Run the template: <strong>gulp</strong>
